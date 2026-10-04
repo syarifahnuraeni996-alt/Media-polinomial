@@ -1,0 +1,1997 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Media Pembelajaran Polinomial Berbasis Roda Berputar</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Google Fonts (Poppins & Fredoka) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+      /* ==========================================================================
+           PENGATURAN WARNA SOFT PINK & SOFT BLUE (PASTEL TEMA)
+           ========================================================================== */
+      :root {
+        --bg-image: url("gambar/bg_biru.jpeg");
+
+        --pink-soft: #fbcfe8;
+        --pink-accent: #ec4899;
+        --blue-soft: #bae6fd;
+        --blue-accent: #0284c7;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f0f9ff;
+        background-image:
+          linear-gradient(
+            135deg,
+            rgba(252, 231, 243, 0.85),
+            rgba(224, 242, 254, 0.85)
+          ),
+          var(--bg-image);
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        color: #1e293b;
+        min-height: 100vh;
+      }
+
+      h1,
+      h2,
+      h3,
+      .font-heading {
+        font-family: "Fredoka", "Poppins", sans-serif;
+      }
+
+      /* Glassmorphism Terang & Lembut */
+      .glass-card {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 2px solid rgba(255, 255, 255, 0.9);
+        box-shadow:
+          0 10px 25px -5px rgba(236, 72, 153, 0.08),
+          0 8px 10px -6px rgba(2, 132, 199, 0.08);
+      }
+
+      .glass-nav {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 2px solid rgba(244, 114, 182, 0.2);
+      }
+
+      /* Papan Tulis Soft Style */
+      .chalkboard {
+        background: #1e293b;
+        border: 8px solid #f472b6;
+        box-shadow:
+          inset 0 0 15px rgba(0, 0, 0, 0.3),
+          0 10px 20px rgba(0, 0, 0, 0.15);
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      /* Animasi Floating */
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+
+      .animate-float {
+        animation: float 4s ease-in-out infinite;
+      }
+
+      .gradient-text {
+        background: linear-gradient(135deg, #ec4899, #8b5cf6, #0284c7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      @keyframes spinSlow {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .animate-spin-slow {
+        animation: spinSlow 20s linear infinite;
+      }
+    </style>
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <!-- NAVIGATION BAR -->
+    <nav class="glass-nav sticky top-0 z-40 px-6 py-3.5">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <button
+          onclick="showSection('home')"
+          class="flex items-center space-x-3 focus:outline-none group text-left"
+        >
+          <div
+            class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-400 to-sky-400 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition"
+          >
+            <i class="fa-solid fa-compact-disc text-xl animate-spin-slow"></i>
+          </div>
+          <span
+            class="text-xl font-extrabold tracking-wide text-slate-800 font-heading"
+            >RODA <span class="text-pink-500">POLINOMIAL</span></span
+          >
+        </button>
+
+        <div
+          class="hidden md:flex items-center space-x-6 text-sm font-semibold text-slate-700"
+        >
+          <button
+            onclick="showSection('home')"
+            class="hover:text-pink-600 transition"
+          >
+            Beranda
+          </button>
+          <button
+            onclick="showSection('wheel')"
+            class="hover:text-sky-600 transition"
+          >
+            Roda Interaktif
+          </button>
+          <button
+            onclick="showSection('challenge')"
+            class="hover:text-pink-600 transition"
+          >
+            Kartu Tantangan
+          </button>
+          <button
+            onclick="openModal()"
+            class="hover:text-sky-600 transition flex items-center gap-1"
+          >
+            <i class="fa-solid fa-circle-info"></i> Petunjuk
+          </button>
+        </div>
+
+        <button
+          onclick="openModal()"
+          class="bg-gradient-to-r from-pink-500 to-sky-500 hover:from-pink-600 hover:to-sky-600 text-white px-4 py-2 rounded-2xl text-xs font-bold shadow-md transition transform hover:scale-105"
+        >
+          <i class="fa-solid fa-book-open mr-1"></i> Panduan
+        </button>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow">
+      <!-- ================= 1. HALAMAN UTAMA (HOME SECTION) ================= -->
+      <section id="home-section" class="px-6 py-10">
+        <div
+          class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center"
+        >
+          <!-- Teks & Deskripsi Utama -->
+          <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+            <div
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card text-pink-600 text-xs font-bold uppercase tracking-wider shadow-sm"
+            >
+              <span
+                class="w-2.5 h-2.5 rounded-full bg-pink-500 animate-ping"
+              ></span>
+              Media Pembelajaran Matematika Interaktif
+            </div>
+
+            <h1
+              class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-800 leading-tight"
+            >
+              Media Pembelajaran <br />
+              <span class="gradient-text"
+                >Polinomial Berbasis Roda Berputar</span
+              >
+            </h1>
+
+            <p
+              class="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed"
+            >
+              Eksplorasi konsep Polinomial (Suku Banyak) secara visual dan
+              menyenangkan! Putar roda koefisien dan derajat pangkat, operasikan
+              suku-suku matematika, serta uji kemampuanmu di kartu tantangan
+              kuis.
+            </p>
+
+            <!-- Tombol Aksi (CTA) -->
+            <div
+              class="flex flex-wrap justify-center lg:justify-start gap-4 pt-2"
+            >
+              <button
+                onclick="showSection('wheel')"
+                class="bg-gradient-to-r from-pink-500 via-purple-500 to-sky-500 hover:from-pink-600 hover:to-sky-600 text-white font-bold px-8 py-4 rounded-2xl shadow-lg hover:shadow-pink-300 transition transform hover:-translate-y-1 flex items-center gap-3 text-sm"
+              >
+                <i class="fa-solid fa-play text-base"></i>
+                <span>Mulai Belajar & Bermain</span>
+              </button>
+
+              <button
+                onclick="openModal()"
+                class="glass-card hover:bg-white text-slate-700 font-bold px-6 py-4 rounded-2xl transition border border-pink-200 flex items-center gap-2 text-sm"
+              >
+                <i class="fa-solid fa-circle-question text-sky-500"></i>
+                <span>Petunjuk Penggunaan</span>
+              </button>
+            </div>
+
+            <!-- Indikator Informasi -->
+            <div
+              class="grid grid-cols-3 gap-4 pt-6 border-t border-pink-200/60 max-w-lg mx-auto lg:mx-0 text-center"
+            >
+              <div class="p-3 rounded-2xl bg-white/60">
+                <p class="text-2xl font-black text-pink-500">2 Roda</p>
+                <p class="text-xs text-slate-500 font-medium">
+                  Koefisien & Pangkat
+                </p>
+              </div>
+              <div class="p-3 rounded-2xl bg-white/60">
+                <p class="text-2xl font-black text-sky-500">4 Operasi</p>
+                <p class="text-xs text-slate-500 font-medium">+, −, ×, ÷</p>
+              </div>
+              <div class="p-3 rounded-2xl bg-white/60">
+                <p class="text-2xl font-black text-purple-500">20 Soal</p>
+                <p class="text-xs text-slate-500 font-medium">
+                  Acak 5 Tantangan
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ilustrasi / Visual Card Roda Polinomial -->
+          <div class="lg:col-span-5 flex justify-center relative">
+            <div
+              class="absolute w-72 h-72 bg-pink-300/40 rounded-full filter blur-3xl -z-10"
+            ></div>
+            <div
+              class="absolute w-60 h-60 bg-sky-300/40 rounded-full filter blur-3xl -z-10 translate-x-12 translate-y-12"
+            ></div>
+
+            <div
+              class="glass-card p-8 rounded-3xl text-center relative max-w-sm w-full shadow-xl animate-float"
+            >
+              <!-- Tempat Gambar Roda Polinomial -->
+              <div
+                class="w-48 h-48 mx-auto mb-4 flex items-center justify-center relative"
+              >
+                <img
+                  src="gambar/roda.png"
+                  alt="Roda Polinomial"
+                  class="w-full h-full object-contain drop-shadow-md"
+                  onerror="
+                    this.onerror = null;
+                    this.outerHTML =
+                      '<div class=\'w-44 h-44 rounded-full border-4 border-pink-400 bg-gradient-to-tr from-sky-200 via-pink-200 to-purple-200 flex items-center justify-center shadow-lg relative animate-spin-slow\'><div class=\'w-28 h-28 rounded-full border-4 border-sky-400 bg-white flex items-center justify-center font-bold text-pink-500 text-lg shadow-inner font-heading\'>3x²</div><div class=\'absolute -top-2 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-[16px] border-t-pink-500\'></div></div>';
+                  "
+                />
+              </div>
+
+              <div
+                class="bg-gradient-to-r from-pink-100 to-sky-100 rounded-2xl p-4 border border-pink-200"
+              >
+                <h3 class="text-lg font-bold text-slate-800 mb-1 font-heading">
+                  Roda Polinomial
+                </h3>
+                <p class="text-xs text-slate-600">
+                  Gunakan roda konsentris untuk membentuk suku seperti
+                  <span class="text-pink-600 font-bold">3x²</span> atau
+                  <span class="text-sky-600 font-bold">-4x</span> secara instan!
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MENU UTAMA CARD -->
+        <div class="max-w-7xl mx-auto mt-14 pt-10 border-t border-pink-200/60">
+          <div class="text-center mb-8">
+            <h2 class="text-2xl font-extrabold text-slate-800">
+              Fitur & Mode Pembelajaran
+            </h2>
+            <p class="text-slate-500 text-xs mt-1">
+              Pilih mode yang ingin kamu akses:
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <!-- Card Roda -->
+            <div
+              onclick="showSection('wheel')"
+              class="glass-card p-6 rounded-3xl hover:border-sky-400 hover:shadow-sky-200/50 transition cursor-pointer group flex flex-col justify-between"
+            >
+              <div>
+                <div
+                  class="w-14 h-14 rounded-2xl bg-sky-100 text-sky-500 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition shadow-sm"
+                >
+                  <i class="fa-solid fa-dharmachakra"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-1">
+                  Roda Interaktif
+                </h3>
+                <p class="text-slate-600 text-xs">
+                  Putar Roda Koefisien (-4 s/d 4) & Roda Pangkat (x³, x², x, 1).
+                </p>
+              </div>
+              <button
+                class="mt-6 w-full py-2.5 bg-sky-500 hover:bg-sky-600 text-white rounded-xl text-xs font-bold shadow-sm transition"
+              >
+                Buka Roda
+              </button>
+            </div>
+
+            <!-- Card Tantangan -->
+            <div
+              onclick="showSection('challenge')"
+              class="glass-card p-6 rounded-3xl hover:border-pink-400 hover:shadow-pink-200/50 transition cursor-pointer group flex flex-col justify-between"
+            >
+              <div>
+                <div
+                  class="w-14 h-14 rounded-2xl bg-pink-100 text-pink-500 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition shadow-sm"
+                >
+                  <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-1">
+                  Kartu Tantangan
+                </h3>
+                <p class="text-slate-600 text-xs">
+                  Uji pemahamanmu dengan 5 soal acak ber-backsound kartun
+                  Doraemon.
+                </p>
+              </div>
+              <button
+                class="mt-6 w-full py-2.5 bg-pink-500 hover:bg-pink-600 text-white rounded-xl text-xs font-bold shadow-sm transition"
+              >
+                Mulai Tantangan
+              </button>
+            </div>
+
+            <!-- Card Petunjuk -->
+            <div
+              onclick="openModal()"
+              class="glass-card p-6 rounded-3xl hover:border-purple-400 hover:shadow-purple-200/50 transition cursor-pointer group flex flex-col justify-between"
+            >
+              <div>
+                <div
+                  class="w-14 h-14 rounded-2xl bg-purple-100 text-purple-500 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition shadow-sm"
+                >
+                  <i class="fa-solid fa-book-open"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-1">
+                  Petunjuk Penggunaan
+                </h3>
+                <p class="text-slate-600 text-xs">
+                  Panduan lengkap langkah demi langkah penggunaan media
+                  pembelajaran.
+                </p>
+              </div>
+              <button
+                class="mt-6 w-full py-2.5 bg-purple-500 hover:bg-purple-600 text-white rounded-xl text-xs font-bold shadow-sm transition"
+              >
+                Baca Panduan
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 2. MODUL RODA POLINOMIAL (WHEEL SECTION) ================= -->
+      <section id="wheel-section" class="px-6 py-8 hidden">
+        <div class="max-w-7xl mx-auto space-y-8">
+          <!-- Navigasi Atas Modul -->
+          <div
+            class="flex flex-wrap justify-between items-center gap-4 border-b border-pink-200/60 pb-4"
+          >
+            <div>
+              <button
+                onclick="showSection('home')"
+                class="text-xs text-pink-600 hover:text-pink-700 flex items-center gap-1 font-bold mb-1"
+              >
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
+              </button>
+              <h2 class="text-2xl font-extrabold text-slate-800">
+                Modul Roda Polinomial Interaktif
+              </h2>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button
+                onclick="showSection('challenge')"
+                class="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white text-xs px-4 py-2.5 rounded-xl font-bold shadow-md transition flex items-center gap-1.5"
+              >
+                <i class="fa-solid fa-trophy"></i> Lanjut ke Kartu Tantangan
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <!-- AREA CANVAS RODA (KIRI) -->
+            <div class="lg:col-span-7 flex flex-col items-center">
+              <div
+                class="glass-card p-6 rounded-3xl w-full max-w-md flex flex-col items-center relative shadow-xl"
+              >
+                <!-- Panah Penunjuk Atas (Pink Rose) -->
+                <div
+                  class="w-0 h-0 border-l-[16px] border-l-transparent border-r-[16px] border-r-transparent border-t-[28px] border-t-pink-500 z-20 -mb-3 drop-shadow-md"
+                ></div>
+
+                <!-- Canvas Roda Konsentris Ganda -->
+                <canvas
+                  id="wheelCanvas"
+                  width="360"
+                  height="360"
+                  class="rounded-full shadow-lg cursor-pointer"
+                ></canvas>
+
+                <!-- Tombol Kontrol Putar -->
+                <div class="w-full mt-6 space-y-3">
+                  <button
+                    id="spinBothBtn"
+                    onclick="spinBothWheels()"
+                    class="w-full py-3.5 bg-gradient-to-r from-pink-500 via-purple-500 to-sky-500 hover:from-pink-600 hover:to-sky-600 text-white font-extrabold rounded-2xl shadow-md transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm tracking-wide"
+                  >
+                    <i class="fa-solid fa-rotate text-lg"></i>
+                    <span>PUTAR KEDUA RODA (ACAK)</span>
+                  </button>
+
+                  <div class="grid grid-cols-2 gap-3">
+                    <button
+                      onclick="spinOuterWheel()"
+                      class="py-2.5 bg-sky-500 hover:bg-sky-600 text-white rounded-xl text-xs font-bold shadow-sm transition flex items-center justify-center gap-1"
+                    >
+                      <i class="fa-solid fa-arrows-spin"></i> Putar Koefisien
+                    </button>
+                    <button
+                      onclick="spinInnerWheel()"
+                      class="py-2.5 bg-pink-500 hover:bg-pink-600 text-white rounded-xl text-xs font-bold shadow-sm transition flex items-center justify-center gap-1"
+                    >
+                      <i class="fa-solid fa-arrows-spin"></i> Putar Pangkat
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- AREA HASIL & PAPAN TULIS (KANAN) -->
+            <div class="lg:col-span-5 space-y-6">
+              <!-- Card Hasil Putaran -->
+              <div class="glass-card p-6 rounded-3xl space-y-4 shadow-xl">
+                <div class="flex justify-between items-center">
+                  <span
+                    class="text-xs font-bold uppercase tracking-wider text-slate-500"
+                    >Hasil Penunjuk Roda</span
+                  >
+                  <span
+                    class="px-2.5 py-1 bg-pink-100 text-pink-600 text-[10px] font-bold rounded-full"
+                    >Suku Terbentuk</span
+                  >
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 text-center">
+                  <div
+                    class="bg-sky-50/90 p-3 rounded-2xl border border-sky-200"
+                  >
+                    <p class="text-[10px] text-slate-500 font-semibold">
+                      Koefisien (Roda Luar)
+                    </p>
+                    <p
+                      id="coefDisplay"
+                      class="text-2xl font-extrabold text-sky-600 mt-1"
+                    >
+                      1
+                    </p>
+                  </div>
+                  <div
+                    class="bg-pink-50/90 p-3 rounded-2xl border border-pink-200"
+                  >
+                    <p class="text-[10px] text-slate-500 font-semibold">
+                      Pangkat (Roda Dalam)
+                    </p>
+                    <p
+                      id="powerDisplay"
+                      class="text-2xl font-extrabold text-pink-600 mt-1"
+                    >
+                      x³
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  class="bg-gradient-to-r from-pink-100 to-sky-100 p-4 rounded-2xl border border-pink-200 text-center shadow-inner"
+                >
+                  <p class="text-xs text-slate-600 mb-1 font-semibold">
+                    Suku Tunggal Terbentuk:
+                  </p>
+                  <p
+                    id="resultTermDisplay"
+                    class="text-4xl font-black text-purple-600 tracking-wide"
+                  >
+                    1x³
+                  </p>
+                </div>
+
+                <button
+                  onclick="addTermToBoard()"
+                  class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-md"
+                >
+                  <i class="fa-solid fa-plus-circle"></i>
+                  <span>Tambahkan Suku Ini ke Papan Tulis</span>
+                </button>
+              </div>
+
+              <!-- Card Papan Tulis Kelas Digital -->
+              <div class="chalkboard p-6 rounded-3xl text-pink-100 space-y-4">
+                <div
+                  class="flex justify-between items-center border-b border-slate-700 pb-3"
+                >
+                  <h3
+                    class="font-bold text-sm tracking-wider flex items-center gap-2 text-white font-heading"
+                  >
+                    <i class="fa-solid fa-chalkboard text-pink-400"></i> PAPAN
+                    TULIS KELAS
+                  </h3>
+                  <button
+                    onclick="clearBoard()"
+                    class="text-[11px] text-pink-300 hover:text-pink-100 transition flex items-center gap-1 font-semibold"
+                  >
+                    <i class="fa-solid fa-trash"></i> Bersihkan
+                  </button>
+                </div>
+
+                <!-- Display Ekspresi Polinomial P(x) -->
+                <div
+                  class="min-h-[70px] bg-slate-900/90 rounded-2xl p-4 flex items-center justify-center text-center border border-slate-700"
+                >
+                  <div
+                    id="boardExpression"
+                    class="text-xl sm:text-2xl font-bold tracking-wider text-pink-300"
+                  >
+                    P(x) =
+                    <span class="text-slate-400 text-sm font-normal italic"
+                      >(Belum ada suku)</span
+                    >
+                  </div>
+                </div>
+
+                <!-- Kartu Operasi Cepat -->
+                <div>
+                  <p class="text-[11px] text-slate-300 mb-2 font-medium">
+                    Sisipkan Tanda Operasi:
+                  </p>
+                  <div class="grid grid-cols-4 gap-2">
+                    <button
+                      onclick="addOperatorToBoard('+')"
+                      class="py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-xl font-bold text-sm transition shadow-sm"
+                    >
+                      +
+                    </button>
+                    <button
+                      onclick="addOperatorToBoard('-')"
+                      class="py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl font-bold text-sm transition shadow-sm"
+                    >
+                      −
+                    </button>
+                    <button
+                      onclick="addOperatorToBoard('×')"
+                      class="py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-bold text-sm transition shadow-sm"
+                    >
+                      ×
+                    </button>
+                    <button
+                      onclick="addOperatorToBoard('÷')"
+                      class="py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-xl font-bold text-sm transition shadow-sm"
+                    >
+                      ÷
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 3. MODUL KARTU TANTANGAN (STEP-BY-STEP QUIZ) ================= -->
+      <section id="challenge-section" class="px-6 py-8 hidden">
+        <div class="max-w-3xl mx-auto space-y-6">
+          <!-- Navigasi Atas Modul -->
+          <div
+            class="flex flex-wrap justify-between items-center gap-4 border-b border-pink-200/60 pb-4"
+          >
+            <div>
+              <button
+                onclick="showSection('wheel')"
+                class="text-xs text-sky-600 hover:text-sky-700 flex items-center gap-1 font-bold mb-1"
+              >
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Roda
+                Interaktif
+              </button>
+              <h2 class="text-2xl font-extrabold text-slate-800">
+                Modul Kartu Tantangan Polinomial
+              </h2>
+            </div>
+
+            <!-- Tombol Toggle Musik Background -->
+            <button
+              id="bgmToggleBtn"
+              onclick="toggleBGM()"
+              class="glass-card hover:bg-white text-xs text-pink-600 border border-pink-300 px-3.5 py-2 rounded-xl flex items-center gap-2 font-bold shadow-sm transition"
+            >
+              <i id="bgmIcon" class="fa-solid fa-music animate-bounce"></i>
+              <span id="bgmLabel">Musik Doraemon: ON</span>
+            </button>
+          </div>
+
+          <!-- 3A. STEP 1: FORM INPUT IDENTITAS SISWA -->
+          <div
+            id="challengeStartView"
+            class="glass-card p-8 rounded-3xl shadow-xl space-y-6 text-center"
+          >
+            <div
+              class="w-16 h-16 rounded-2xl bg-pink-100 text-pink-500 flex items-center justify-center text-3xl mx-auto shadow-sm"
+            >
+              <i class="fa-solid fa-user-graduate"></i>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-extrabold text-slate-800 mb-2">
+                Identitas Siswa
+              </h3>
+              <p class="text-xs text-slate-600 max-w-md mx-auto">
+                Masukkan Nama dan NIS Anda. Sistem akan memilihkan
+                <strong>5 soal acak</strong> dari bank 20 tantangan polinomial!
+              </p>
+            </div>
+
+            <form
+              onsubmit="startQuiz(event)"
+              class="space-y-4 max-w-md mx-auto text-left"
+            >
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1"
+                  >Nama Lengkap Siswa</label
+                >
+                <input
+                  type="text"
+                  id="inputStudentName"
+                  required
+                  placeholder="Contoh: Budi Pratama"
+                  class="w-full px-4 py-3 rounded-xl bg-white border border-pink-200 text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-pink-500 transition shadow-sm"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1"
+                  >NIS (Nomor Induk Siswa)</label
+                >
+                <input
+                  type="text"
+                  id="inputStudentNis"
+                  required
+                  placeholder="Contoh: 12345"
+                  class="w-full px-4 py-3 rounded-xl bg-white border border-pink-200 text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-pink-500 transition shadow-sm"
+                />
+              </div>
+
+              <button
+                type="submit"
+                class="w-full py-4 bg-gradient-to-r from-pink-500 to-sky-500 hover:from-pink-600 hover:to-sky-600 text-white font-extrabold rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm tracking-wide"
+              >
+                <span>MULAI TANTANGAN ACAK</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </form>
+          </div>
+
+          <!-- 3B. STEP 2: TAMPILAN SOAL PER SOAL (SLIDE BY SLIDE) -->
+          <div id="challengeQuizView" class="hidden space-y-6">
+            <!-- Progress Bar Header -->
+            <div
+              class="glass-card p-4 rounded-2xl flex justify-between items-center text-xs shadow-sm"
+            >
+              <div class="flex items-center gap-2">
+                <span
+                  class="w-2.5 h-2.5 rounded-full bg-pink-500 animate-ping"
+                ></span>
+                <span id="quizStudentInfo" class="font-bold text-pink-600"
+                  >Siswa: -</span
+                >
+              </div>
+              <div class="font-bold text-slate-600">
+                Soal
+                <span
+                  id="currentQuestionNum"
+                  class="text-sky-600 font-extrabold"
+                  >1</span
+                >
+                dari 5
+              </div>
+            </div>
+
+            <!-- Card Soal -->
+            <div
+              id="singleQuestionContainer"
+              class="glass-card p-6 sm:p-8 rounded-3xl shadow-xl space-y-6"
+            >
+              <!-- Konten Soal di-render dinamis via JS -->
+            </div>
+
+            <!-- Tombol Navigasi Lanjut -->
+            <div class="flex justify-end">
+              <button
+                id="nextQuestionBtn"
+                onclick="goToNextQuestion()"
+                disabled
+                class="px-8 py-3.5 bg-slate-300 text-slate-500 font-bold rounded-2xl text-xs transition flex items-center gap-2 shadow-none cursor-not-allowed"
+              >
+                <span>Lanjut ke Tantangan Berikutnya</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3C. STEP 3: LAPORAN HASIL AKHIR (FINAL RESULT REPORT) -->
+          <div
+            id="challengeResultView"
+            class="hidden glass-card p-8 rounded-3xl shadow-xl space-y-6 text-center"
+          >
+            <div
+              class="w-20 h-20 rounded-3xl bg-pink-100 text-pink-500 flex items-center justify-center text-4xl mx-auto shadow-sm"
+            >
+              <i class="fa-solid fa-award"></i>
+            </div>
+
+            <div>
+              <span
+                class="px-3 py-1 bg-pink-100 text-pink-600 text-[10px] font-extrabold rounded-full uppercase tracking-wider"
+                >Laporan Hasil Akhir</span
+              >
+              <h3 class="text-3xl font-extrabold text-slate-800 mt-2">
+                Tantangan Selesai!
+              </h3>
+            </div>
+
+            <!-- Data Siswa -->
+            <div
+              class="bg-white/80 p-4 rounded-2xl border border-pink-200 max-w-md mx-auto text-left space-y-1 text-xs shadow-sm"
+            >
+              <div class="flex justify-between">
+                <span class="text-slate-500 font-medium">Nama Siswa:</span>
+                <span id="resStudentName" class="font-bold text-slate-800"
+                  >-</span
+                >
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-500 font-medium">NIS:</span>
+                <span id="resStudentNis" class="font-bold text-slate-800"
+                  >-</span
+                >
+              </div>
+            </div>
+
+            <!-- Metrik Hasil Skor -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-lg mx-auto">
+              <div
+                class="bg-white/90 p-4 rounded-2xl border border-amber-200 shadow-sm"
+              >
+                <p class="text-[10px] text-slate-500 font-bold">TOTAL SKOR</p>
+                <p
+                  id="resTotalScore"
+                  class="text-2xl font-black text-amber-500 mt-1"
+                >
+                  0
+                </p>
+              </div>
+              <div
+                class="bg-white/90 p-4 rounded-2xl border border-emerald-200 shadow-sm"
+              >
+                <p class="text-[10px] text-slate-500 font-bold">BENAR</p>
+                <p
+                  id="resCorrectCount"
+                  class="text-2xl font-black text-emerald-500 mt-1"
+                >
+                  0
+                </p>
+              </div>
+              <div
+                class="bg-white/90 p-4 rounded-2xl border border-rose-200 shadow-sm"
+              >
+                <p class="text-[10px] text-slate-500 font-bold">SALAH</p>
+                <p
+                  id="resWrongCount"
+                  class="text-2xl font-black text-rose-500 mt-1"
+                >
+                  0
+                </p>
+              </div>
+              <div
+                class="bg-white/90 p-4 rounded-2xl border border-purple-200 shadow-sm"
+              >
+                <p class="text-[10px] text-slate-500 font-bold">AKURASI</p>
+                <p
+                  id="resAccuracy"
+                  class="text-2xl font-black text-purple-500 mt-1"
+                >
+                  0%
+                </p>
+              </div>
+            </div>
+
+            <!-- Pesan Motivasi Evaluasi -->
+            <div
+              id="resFeedbackMsg"
+              class="p-4 rounded-2xl bg-gradient-to-r from-pink-50 to-sky-50 border border-pink-200 text-xs text-slate-700 font-semibold max-w-md mx-auto shadow-sm"
+            >
+              Hebat! Kamu telah menyelesaikan seluruh modul kuis polinomial.
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-4 pt-2">
+              <button
+                onclick="resetQuizToStart()"
+                class="px-6 py-3.5 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold rounded-2xl text-xs transition flex items-center gap-2 shadow-md"
+              >
+                <i class="fa-solid fa-rotate-left"></i>
+                <span>Ulangi Tantangan (Soal Acak Baru)</span>
+              </button>
+
+              <button
+                onclick="showSection('wheel')"
+                class="glass-card hover:bg-white text-slate-700 font-bold px-6 py-3.5 rounded-2xl text-xs transition border border-pink-200 flex items-center gap-2"
+              >
+                <i class="fa-solid fa-dharmachakra text-sky-500"></i>
+                <span>Kembali ke Roda</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- MODAL PETUNJUK PENGGUNAAN -->
+    <div
+      id="guideModal"
+      class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4"
+    >
+      <div
+        class="glass-card bg-white/95 border border-pink-200 max-w-2xl w-full rounded-3xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto text-slate-800 relative shadow-2xl"
+      >
+        <button
+          onclick="closeModal()"
+          class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 text-xl"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="flex items-center gap-3 mb-6">
+          <div
+            class="w-10 h-10 rounded-2xl bg-pink-500 flex items-center justify-center text-white shadow-sm"
+          >
+            <i class="fa-solid fa-circle-info text-xl"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold font-heading text-slate-800">
+              Petunjuk Penggunaan Media
+            </h3>
+            <p class="text-xs text-slate-500">
+              Panduan langkah-demi-langkah menggunakan Roda Polinomial
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-4 text-sm text-slate-600">
+          <div
+            class="p-4 rounded-2xl bg-pink-50/80 border border-pink-200 flex gap-4 items-start"
+          >
+            <span
+              class="w-7 h-7 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm"
+              >1</span
+            >
+            <div>
+              <h4 class="font-bold text-slate-800">Memutar Roda Polinomial</h4>
+              <p class="text-xs text-slate-600 mt-1">
+                Gunakan tombol <strong>"PUTAR KEDUA RODA"</strong> untuk memutar
+                Roda Luar (Koefisien: -4 sampai 4) dan Roda Dalam (Pangkat: x³,
+                x², x, x⁰=1) secara acak.
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="p-4 rounded-2xl bg-sky-50/80 border border-sky-200 flex gap-4 items-start"
+          >
+            <span
+              class="w-7 h-7 rounded-full bg-sky-500 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm"
+              >2</span
+            >
+            <div>
+              <h4 class="font-bold text-slate-800">
+                Membentuk Suku Polinomial
+              </h4>
+              <p class="text-xs text-slate-600 mt-1">
+                Perhatikan hasil di bawah panah penunjuk. Kombinasi koefisien
+                dan variabel akan otomatis membentuk suku tunggal (misal: -3x²).
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="p-4 rounded-2xl bg-purple-50/80 border border-purple-200 flex gap-4 items-start"
+          >
+            <span
+              class="w-7 h-7 rounded-full bg-purple-500 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm"
+              >3</span
+            >
+            <div>
+              <h4 class="font-bold text-slate-800">
+                Menyusun di Papan Tulis Kelas
+              </h4>
+              <p class="text-xs text-slate-600 mt-1">
+                Klik <strong>"Tambahkan Suku Ini ke Papan Tulis"</strong> lalu
+                sisipkan Kartu Operasi (+, −, ×, ÷) untuk menyusun persamaan
+                polinomial utuh.
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200 flex gap-4 items-start"
+          >
+            <span
+              class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm"
+              >4</span
+            >
+            <div>
+              <h4 class="font-bold text-slate-800">
+                Menyelesaikan Kartu Tantangan Acak
+              </h4>
+              <p class="text-xs text-slate-600 mt-1">
+                Isi Identitas Nama & NIS pada menu
+                <strong>"Kartu Tantangan"</strong> untuk mengerjakan 5 soal acak
+                yang dipilih dari bank 20 soal polinomial.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 text-center">
+          <button
+            onclick="closeModal()"
+            class="w-full py-3.5 bg-gradient-to-r from-pink-500 to-sky-500 hover:from-pink-600 hover:to-sky-600 text-white rounded-2xl font-bold transition shadow-md"
+          >
+            Saya Mengerti, Tutup Panduan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer
+      class="bg-white/80 py-5 border-t border-pink-200 text-center text-xs text-slate-500 font-medium"
+    >
+      <p>
+        © Media Pembelajaran Matematika Interaktif - Roda Polinomial (Soft
+        Pastel Edition)
+      </p>
+    </footer>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+      // --- DATA RODA POLINOMIAL ---
+      const outerSectors = [1, 2, 3, 4, -1, -2, -3, -4];
+      const innerSectors = ["x³", "x²", "x", "x⁰=1"];
+
+      let outerAngle = 0;
+      let innerAngle = 0;
+      let isSpinning = false;
+
+      let currentCoef = 1;
+      let currentPower = "x³";
+      let boardElements = [];
+
+      // WEB AUDIO API FOR SOUND EFFECTS
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+      // PENGATURAN MUSIK BACKSOUND (DORAEMON CARTOON MELODY)
+      let isBgmPlaying = false;
+      let bgmIntervalId = null;
+
+      function playCartoonBgmMelody() {
+        if (!isBgmPlaying) return;
+        if (audioCtx.state === "suspended") audioCtx.resume();
+
+        // Melodi Ceria Kartun Khas Doraemon (Chiptune Marimba Soft)
+        const doraNotes = [
+          { f: 392.0, d: 0.2 },
+          { f: 392.0, d: 0.2 },
+          { f: 440.0, d: 0.2 },
+          { f: 392.0, d: 0.2 },
+          { f: 523.25, d: 0.4 },
+          { f: 493.88, d: 0.2 },
+          { f: 440.0, d: 0.2 },
+          { f: 392.0, d: 0.4 },
+          { f: 349.23, d: 0.2 },
+          { f: 349.23, d: 0.2 },
+          { f: 392.0, d: 0.2 },
+          { f: 349.23, d: 0.2 },
+          { f: 440.0, d: 0.4 },
+          { f: 392.0, d: 0.2 },
+          { f: 329.63, d: 0.4 },
+        ];
+
+        let totalTime = 0;
+        doraNotes.forEach((note) => {
+          setTimeout(() => {
+            if (!isBgmPlaying) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(note.f, audioCtx.currentTime);
+
+            gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(
+              0.001,
+              audioCtx.currentTime + note.d,
+            );
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + note.d);
+          }, totalTime * 1000);
+
+          totalTime += note.d + 0.05;
+        });
+      }
+
+      function startBGM() {
+        if (isBgmPlaying) return;
+        isBgmPlaying = true;
+        playCartoonBgmMelody();
+        bgmIntervalId = setInterval(playCartoonBgmMelody, 5500);
+        updateBgmUI(true);
+      }
+
+      function stopBGM() {
+        isBgmPlaying = false;
+        if (bgmIntervalId) clearInterval(bgmIntervalId);
+        updateBgmUI(false);
+      }
+
+      function toggleBGM() {
+        if (isBgmPlaying) {
+          stopBGM();
+        } else {
+          startBGM();
+        }
+      }
+
+      function updateBgmUI(active) {
+        const label = document.getElementById("bgmLabel");
+        const icon = document.getElementById("bgmIcon");
+        if (active) {
+          label.innerText = "Musik Doraemon: ON";
+          icon.className = "fa-solid fa-music animate-bounce text-pink-500";
+        } else {
+          label.innerText = "Musik Doraemon: OFF";
+          icon.className = "fa-solid fa-volume-xmark text-slate-400";
+        }
+      }
+
+      function playTickSound() {
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(
+          150,
+          audioCtx.currentTime + 0.04,
+        );
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.04);
+      }
+
+      function playWinSound() {
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const notes = [523.25, 659.25, 783.99, 1046.5];
+        notes.forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.1);
+          gain.gain.setValueAtTime(0.18, audioCtx.currentTime + idx * 0.1);
+          gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            audioCtx.currentTime + idx * 0.1 + 0.3,
+          );
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(audioCtx.currentTime + idx * 0.1);
+          osc.stop(audioCtx.currentTime + idx * 0.1 + 0.3);
+        });
+      }
+
+      function playCongratsSound() {
+        stopBGM();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+
+        const notes = [523.25, 659.25, 783.99, 1046.5, 1318.51];
+        notes.forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.12);
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.12);
+          gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            audioCtx.currentTime + idx * 0.12 + 0.5,
+          );
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(audioCtx.currentTime + idx * 0.12);
+          osc.stop(audioCtx.currentTime + idx * 0.12 + 0.5);
+        });
+
+        if ("speechSynthesis" in window) {
+          setTimeout(() => {
+            const msg = new SpeechSynthesisUtterance();
+            msg.text = `Selamat ${quizState.studentName}! Kamu luar biasa, telah menyelesaikan seluruh tantangan polinomial!`;
+            msg.lang = "id-ID";
+            msg.rate = 1.0;
+            msg.pitch = 1.1;
+            window.speechSynthesis.speak(msg);
+          }, 600);
+        }
+      }
+
+      // SWAP SECTIONS (HOME / WHEEL / CHALLENGE)
+      function showSection(sectionId) {
+        const homeSec = document.getElementById("home-section");
+        const wheelSec = document.getElementById("wheel-section");
+        const challengeSec = document.getElementById("challenge-section");
+
+        homeSec.classList.add("hidden");
+        wheelSec.classList.add("hidden");
+        challengeSec.classList.add("hidden");
+
+        if (sectionId === "wheel") {
+          stopBGM();
+          wheelSec.classList.remove("hidden");
+          drawWheel();
+        } else if (sectionId === "challenge") {
+          challengeSec.classList.remove("hidden");
+        } else {
+          stopBGM();
+          homeSec.classList.remove("hidden");
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // CANVAS DRAWING (DUAL CONCENTRIC WHEEL PASTEL EDITION)
+      const canvas = document.getElementById("wheelCanvas");
+      const ctx = canvas.getContext("2d");
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const outerRadius = 175;
+      const innerRadius = 100;
+      const centerRadius = 35;
+
+      function drawWheel() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const numOuter = outerSectors.length;
+        const outerArc = (2 * Math.PI) / numOuter;
+
+        // Roda Luar: Soft Blue (Positif) & Soft Pink (Negatif)
+        for (let i = 0; i < numOuter; i++) {
+          const angle = outerAngle + i * outerArc;
+          const val = outerSectors[i];
+
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, outerRadius, angle, angle + outerArc);
+          ctx.arc(centerX, centerY, innerRadius, angle + outerArc, angle, true);
+          ctx.closePath();
+
+          ctx.fillStyle =
+            val > 0
+              ? i % 2 === 0
+                ? "#38bdf8"
+                : "#0284c7" // Soft Sky Blue
+              : i % 2 === 0
+                ? "#fb7185"
+                : "#e11d48"; // Soft Rose Pink
+          ctx.fill();
+          ctx.strokeStyle = "#ffffff";
+          ctx.lineWidth = 3;
+          ctx.stroke();
+
+          ctx.save();
+          ctx.translate(centerX, centerY);
+          ctx.rotate(angle + outerArc / 2);
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 20px Fredoka";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(
+            val > 0 ? `+${val}` : `${val}`,
+            (outerRadius + innerRadius) / 2,
+            0,
+          );
+          ctx.restore();
+        }
+
+        // Roda Dalam: Soft Mint
+        const numInner = innerSectors.length;
+        const innerArc = (2 * Math.PI) / numInner;
+
+        for (let i = 0; i < numInner; i++) {
+          const angle = innerAngle + i * innerArc;
+
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, innerRadius, angle, angle + innerArc);
+          ctx.arc(
+            centerX,
+            centerY,
+            centerRadius,
+            angle + innerArc,
+            angle,
+            true,
+          );
+          ctx.closePath();
+
+          ctx.fillStyle = i % 2 === 0 ? "#10b981" : "#059669"; // Mint Green
+          ctx.fill();
+          ctx.strokeStyle = "#ffffff";
+          ctx.lineWidth = 3;
+          ctx.stroke();
+
+          ctx.save();
+          ctx.translate(centerX, centerY);
+          ctx.rotate(angle + innerArc / 2);
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 16px Fredoka";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(innerSectors[i], (innerRadius + centerRadius) / 2, 0);
+          ctx.restore();
+        }
+
+        // Titik Tengah Roda
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, centerRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = "#ec4899";
+        ctx.fill();
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 10, 0, 2 * Math.PI);
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+      }
+
+      function spinBothWheels() {
+        if (isSpinning) return;
+        isSpinning = true;
+
+        const targetOuterSpin =
+          Math.PI * 2 * (4 + Math.random() * 4) + Math.random() * Math.PI * 2;
+        const targetInnerSpin =
+          Math.PI * 2 * (4 + Math.random() * 4) + Math.random() * Math.PI * 2;
+
+        let start = null;
+        const duration = 3500;
+        let lastTick = 0;
+
+        function animate(timestamp) {
+          if (!start) start = timestamp;
+          const progress = (timestamp - start) / duration;
+
+          if (progress < 1) {
+            const ease = 1 - Math.pow(1 - progress, 3);
+            outerAngle = targetOuterSpin * ease;
+            innerAngle = targetInnerSpin * ease;
+
+            if (timestamp - lastTick > 120 * (1 + ease * 2)) {
+              playTickSound();
+              lastTick = timestamp;
+            }
+
+            drawWheel();
+            requestAnimationFrame(animate);
+          } else {
+            outerAngle = targetOuterSpin % (Math.PI * 2);
+            innerAngle = targetInnerSpin % (Math.PI * 2);
+            drawWheel();
+            calculateResult();
+            isSpinning = false;
+          }
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      function spinOuterWheel() {
+        if (isSpinning) return;
+        isSpinning = true;
+        const targetOuterSpin =
+          outerAngle + Math.PI * 2 * 3 + Math.random() * Math.PI * 2;
+        let start = null;
+        const duration = 2500;
+
+        function animate(timestamp) {
+          if (!start) start = timestamp;
+          const progress = (timestamp - start) / duration;
+          if (progress < 1) {
+            const ease = 1 - Math.pow(1 - progress, 3);
+            outerAngle = targetOuterSpin * ease;
+            drawWheel();
+            requestAnimationFrame(animate);
+          } else {
+            outerAngle = targetOuterSpin % (Math.PI * 2);
+            drawWheel();
+            calculateResult();
+            isSpinning = false;
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+
+      function spinInnerWheel() {
+        if (isSpinning) return;
+        isSpinning = true;
+        const targetInnerSpin =
+          innerAngle + Math.PI * 2 * 3 + Math.random() * Math.PI * 2;
+        let start = null;
+        const duration = 2500;
+
+        function animate(timestamp) {
+          if (!start) start = timestamp;
+          const progress = (timestamp - start) / duration;
+          if (progress < 1) {
+            const ease = 1 - Math.pow(1 - progress, 3);
+            innerAngle = targetInnerSpin * ease;
+            drawWheel();
+            requestAnimationFrame(animate);
+          } else {
+            innerAngle = targetInnerSpin % (Math.PI * 2);
+            drawWheel();
+            calculateResult();
+            isSpinning = false;
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+
+      function calculateResult() {
+        const pointerAngle = (3 * Math.PI) / 2;
+
+        const numOuter = outerSectors.length;
+        const outerArc = (2 * Math.PI) / numOuter;
+        let normalizedOuter =
+          (pointerAngle - (outerAngle % (2 * Math.PI)) + Math.PI * 4) %
+          (2 * Math.PI);
+        let outerIndex = Math.floor(normalizedOuter / outerArc) % numOuter;
+        currentCoef = outerSectors[outerIndex];
+
+        const numInner = innerSectors.length;
+        const innerArc = (2 * Math.PI) / numInner;
+        let normalizedInner =
+          (pointerAngle - (innerAngle % (2 * Math.PI)) + Math.PI * 4) %
+          (2 * Math.PI);
+        let innerIndex = Math.floor(normalizedInner / innerArc) % numInner;
+        currentPower = innerSectors[innerIndex];
+
+        document.getElementById("coefDisplay").innerText =
+          currentCoef > 0 ? `+${currentCoef}` : `${currentCoef}`;
+        document.getElementById("powerDisplay").innerText = currentPower;
+
+        let formattedTerm = "";
+        let pVar = currentPower === "x⁰=1" ? "" : currentPower;
+
+        if (pVar === "") {
+          formattedTerm = `${currentCoef}`;
+        } else {
+          if (currentCoef === 1) formattedTerm = pVar;
+          else if (currentCoef === -1) formattedTerm = `-${pVar}`;
+          else formattedTerm = `${currentCoef}${pVar}`;
+        }
+
+        document.getElementById("resultTermDisplay").innerText = formattedTerm;
+      }
+
+      function addTermToBoard() {
+        const termText = document.getElementById("resultTermDisplay").innerText;
+        if (termText) {
+          boardElements.push(termText);
+          updateBoardUI();
+        }
+      }
+
+      function addOperatorToBoard(op) {
+        if (boardElements.length > 0) {
+          boardElements.push(` ${op} `);
+          updateBoardUI();
+        }
+      }
+
+      function clearBoard() {
+        boardElements = [];
+        updateBoardUI();
+      }
+
+      function updateBoardUI() {
+        const board = document.getElementById("boardExpression");
+        if (boardElements.length === 0) {
+          board.innerHTML = `P(x) = <span class="text-slate-400 text-sm font-normal italic">(Belum ada suku)</span>`;
+        } else {
+          board.innerHTML = `P(x) = ${boardElements.join("")}`;
+        }
+      }
+
+      // ================= BANK 20 SOAL KARTU TANTANGAN =================
+      const allChallengesBank = [
+        {
+          id: 1,
+          title: "TANTANGAN 1",
+          question: "Bentuklah suku polinomial 3x²!",
+          badgeColor: "border-pink-300 bg-pink-100 text-pink-600",
+          options: [
+            { text: "Koefisien: 3, Pangkat: x²", correct: true },
+            { text: "Koefisien: 2, Pangkat: x³", correct: false },
+            { text: "Koefisien: -3, Pangkat: x²", correct: false },
+            { text: "Koefisien: 3, Pangkat: x", correct: false },
+          ],
+          explanation:
+            "Suku 3x² terdiri dari koefisien 3 dan variabel x berpangkat 2 (x²).",
+        },
+        {
+          id: 2,
+          title: "TANTANGAN 2",
+          question: "Bentuklah suku polinomial -4x!",
+          badgeColor: "border-sky-300 bg-sky-100 text-sky-600",
+          options: [
+            { text: "Koefisien: 4, Pangkat: x", correct: false },
+            { text: "Koefisien: -4, Pangkat: x", correct: true },
+            { text: "Koefisien: -4, Pangkat: x²", correct: false },
+            { text: "Koefisien: -1, Pangkat: x⁴", correct: false },
+          ],
+          explanation:
+            "Suku -4x terdiri dari koefisien negatif -4 dan variabel x berpangkat 1.",
+        },
+        {
+          id: 3,
+          title: "TANTANGAN 3",
+          question: "Hitunglah hasil dari 3x² + 5x²!",
+          badgeColor: "border-purple-300 bg-purple-100 text-purple-600",
+          options: [
+            { text: "8x⁴", correct: false },
+            { text: "15x²", correct: false },
+            { text: "8x²", correct: true },
+            { text: "8x", correct: false },
+          ],
+          explanation:
+            "Karena variabel dan pangkatnya sama (x²), jumlahkan koefisiennya: (3 + 5)x² = 8x².",
+        },
+        {
+          id: 4,
+          title: "TANTANGAN 4",
+          question: "Hitunglah hasil dari (-2x)(3x²)!",
+          badgeColor: "border-emerald-300 bg-emerald-100 text-emerald-600",
+          options: [
+            { text: "-6x³", correct: true },
+            { text: "6x³", correct: false },
+            { text: "-5x²", correct: false },
+            { text: "-6x²", correct: false },
+          ],
+          explanation:
+            "Kalikan koefisien (-2 × 3 = -6) dan jumlahkan pangkat variabelnya (x¹ × x² = x¹⁺² = x³). Hasilnya: -6x³.",
+        },
+        {
+          id: 5,
+          title: "TANTANGAN 5",
+          question: "Hitunglah hasil dari (6x³) / (2x)!",
+          badgeColor: "border-pink-300 bg-pink-100 text-pink-600",
+          options: [
+            { text: "3x³", correct: false },
+            { text: "4x²", correct: false },
+            { text: "3x", correct: false },
+            { text: "3x²", correct: true },
+          ],
+          explanation:
+            "Bagi koefisien (6 ÷ 2 = 3) dan kurangkan pangkat variabelnya (x³ ÷ x¹ = x³⁻¹ = x²). Hasilnya: 3x².",
+        },
+        {
+          id: 6,
+          title: "TANTANGAN 6",
+          question: "Berapakah derajat polinomial dari P(x) = 4x⁵ - 2x³ + 7?",
+          badgeColor: "border-sky-300 bg-sky-100 text-sky-600",
+          options: [
+            { text: "3", correct: false },
+            { text: "5", correct: true },
+            { text: "4", correct: false },
+            { text: "7", correct: false },
+          ],
+          explanation:
+            "Derajat polinomial adalah pangkat tertinggi dari variabel x. Pangkat tertingginya adalah 5.",
+        },
+        {
+          id: 7,
+          title: "TANTANGAN 7",
+          question: "Tentukan suku tetap (konstanta) dari P(x) = 2x³ - 5x + 8!",
+          badgeColor: "border-purple-300 bg-purple-100 text-purple-600",
+          options: [
+            { text: "8", correct: true },
+            { text: "-5", correct: false },
+            { text: "2", correct: false },
+            { text: "0", correct: false },
+          ],
+          explanation:
+            "Suku tetap (konstanta) adalah suku yang tidak mengandung variabel x, yaitu 8.",
+        },
+        {
+          id: 8,
+          title: "TANTANGAN 8",
+          question: "Hitunglah hasil dari 5x³ - 2x³!",
+          badgeColor: "border-emerald-300 bg-emerald-100 text-emerald-600",
+          options: [
+            { text: "3x³", correct: true },
+            { text: "3x⁰", correct: false },
+            { text: "7x³", correct: false },
+            { text: "3", correct: false },
+          ],
+          explanation:
+            "Kurangkan koefisien dari suku sejenis: (5 - 2)x³ = 3x³.",
+        },
+        {
+          id: 9,
+          title: "TANTANGAN 9",
+          question: "Hasil perkalian dari (x + 3)(x + 2) adalah...",
+          badgeColor: "border-pink-300 bg-pink-100 text-pink-600",
+          options: [
+            { text: "x² + 5x + 6", correct: true },
+            { text: "x² + 6x + 5", correct: false },
+            { text: "x² + 5", correct: false },
+            { text: "x² + 6", correct: false },
+          ],
+          explanation:
+            "(x+3)(x+2) = x(x+2) + 3(x+2) = x² + 2x + 3x + 6 = x² + 5x + 6.",
+        },
+        {
+          id: 10,
+          title: "TANTANGAN 10",
+          question: "Jika P(x) = x² + 3x - 1, tentukan nilai P(2)!",
+          badgeColor: "border-sky-300 bg-sky-100 text-sky-600",
+          options: [
+            { text: "9", correct: true },
+            { text: "7", correct: false },
+            { text: "11", correct: false },
+            { text: "8", correct: false },
+          ],
+          explanation:
+            "Substitusi x = 2 ke P(x): P(2) = (2)² + 3(2) - 1 = 4 + 6 - 1 = 9.",
+        },
+        {
+          id: 11,
+          title: "TANTANGAN 11",
+          question:
+            "Berapakah koefisien x² dari polinomial P(x) = 3x³ - 5x² + 2x - 7?",
+          badgeColor: "border-purple-300 bg-purple-100 text-purple-600",
+          options: [
+            { text: "-5", correct: true },
+            { text: "5", correct: false },
+            { text: "3", correct: false },
+            { text: "2", correct: false },
+          ],
+          explanation: "Koefisien di depan variabel x² adalah -5.",
+        },
+        {
+          id: 12,
+          title: "TANTANGAN 12",
+          question: "Hitunglah hasil dari (2x²)(4x³)!",
+          badgeColor: "border-emerald-300 bg-emerald-100 text-emerald-600",
+          options: [
+            { text: "8x⁵", correct: true },
+            { text: "8x⁶", correct: false },
+            { text: "6x⁵", correct: false },
+            { text: "8x", correct: false },
+          ],
+          explanation:
+            "Kalikan koefisien (2 × 4 = 8) dan jumlahkan pangkat (x²⁺³ = x⁵). Hasilnya: 8x⁵.",
+        },
+        {
+          id: 13,
+          title: "TANTANGAN 13",
+          question: "Hitunglah hasil pembagian (4x⁴) / (x²)!",
+          badgeColor: "border-pink-300 bg-pink-100 text-pink-600",
+          options: [
+            { text: "4x²", correct: true },
+            { text: "4x", correct: false },
+            { text: "2x²", correct: false },
+            { text: "4x⁶", correct: false },
+          ],
+          explanation:
+            "Kurangkan pangkat variabel pada pembagian: 4x⁴⁻² = 4x².",
+        },
+        {
+          id: 14,
+          title: "TANTANGAN 14",
+          question: "Tentukan hasil dari (2x² + 3x) + (x² - 2x)!",
+          badgeColor: "border-sky-300 bg-sky-100 text-sky-600",
+          options: [
+            { text: "3x² + x", correct: true },
+            { text: "3x² + 5x", correct: false },
+            { text: "2x² + x", correct: false },
+            { text: "3x⁴ + x²", correct: false },
+          ],
+          explanation:
+            "Kelompokkan suku sejenis: (2x² + x²) + (3x - 2x) = 3x² + x.",
+        },
+        {
+          id: 15,
+          title: "TANTANGAN 15",
+          question: "Jika P(x) = 2x³ - 4x + 5, maka nilai P(1) adalah...",
+          badgeColor: "border-purple-300 bg-purple-100 text-purple-600",
+          options: [
+            { text: "3", correct: true },
+            { text: "1", correct: false },
+            { text: "7", correct: false },
+            { text: "5", correct: false },
+          ],
+          explanation:
+            "Substitusi x = 1: P(1) = 2(1)³ - 4(1) + 5 = 2 - 4 + 5 = 3.",
+        },
+        {
+          id: 16,
+          title: "TANTANGAN 16",
+          question:
+            "Tentukan Koefisien Utama dari polinomial P(x) = -3x⁴ + 2x² - x!",
+          badgeColor: "border-emerald-300 bg-emerald-100 text-emerald-600",
+          options: [
+            { text: "-3", correct: true },
+            { text: "2", correct: false },
+            { text: "4", correct: false },
+            { text: "-1", correct: false },
+          ],
+          explanation:
+            "Koefisien utama adalah koefisien dari suku dengan pangkat tertinggi (-3x⁴), yaitu -3.",
+        },
+        {
+          id: 17,
+          title: "TANTANGAN 17",
+          question: "Bentuk sederhana dari (5x² + 4) - (2x² + 1) adalah...",
+          badgeColor: "border-pink-300 bg-pink-100 text-pink-600",
+          options: [
+            { text: "3x² + 3", correct: true },
+            { text: "3x² + 5", correct: false },
+            { text: "7x² + 3", correct: false },
+            { text: "3x² - 3", correct: false },
+          ],
+          explanation: "(5x² - 2x²) + (4 - 1) = 3x² + 3.",
+        },
+        {
+          id: 18,
+          title: "TANTANGAN 18",
+          question: "Nilai P(0) dari polinomial P(x) = 7x³ - 2x + 10 adalah...",
+          badgeColor: "border-sky-300 bg-sky-100 text-sky-600",
+          options: [
+            { text: "10", correct: true },
+            { text: "0", correct: false },
+            { text: "7", correct: false },
+            { text: "5", correct: false },
+          ],
+          explanation:
+            "Semua suku ber-x menjadi 0: P(0) = 7(0) - 2(0) + 10 = 10.",
+        },
+        {
+          id: 19,
+          title: "TANTANGAN 19",
+          question: "Hasil perkalian dari (3x)(2x - 4) adalah...",
+          badgeColor: "border-purple-300 bg-purple-100 text-purple-600",
+          options: [
+            { text: "6x² - 12x", correct: true },
+            { text: "6x² - 4", correct: false },
+            { text: "5x² - 12x", correct: false },
+            { text: "6x - 12", correct: false },
+          ],
+          explanation:
+            "Gunakan sifat distributif: (3x)(2x) - (3x)(4) = 6x² - 12x.",
+        },
+        {
+          id: 20,
+          title: "TANTANGAN 20",
+          question:
+            "Sederhanakan bentuk pembagian (x² - 9) / (x - 3) untuk x ≠ 3!",
+          badgeColor: "border-emerald-300 bg-emerald-100 text-emerald-600",
+          options: [
+            { text: "x + 3", correct: true },
+            { text: "x - 3", correct: false },
+            { text: "x + 9", correct: false },
+            { text: "3", correct: false },
+          ],
+          explanation:
+            "Faktorkan pembilang: x² - 9 = (x - 3)(x + 3). Pembagian dengan (x - 3) menghasilkan (x + 3).",
+        },
+      ];
+
+      let quizState = {
+        studentName: "",
+        studentNis: "",
+        currentIndex: 0,
+        score: 0,
+        correctCount: 0,
+        wrongCount: 0,
+        userAnswers: [],
+      };
+
+      let activeQuizQuestions = [];
+
+      function startQuiz(event) {
+        event.preventDefault();
+        const name = document.getElementById("inputStudentName").value.trim();
+        const nis = document.getElementById("inputStudentNis").value.trim();
+
+        if (!name || !nis) return;
+
+        quizState.studentName = name;
+        quizState.studentNis = nis;
+        quizState.currentIndex = 0;
+        quizState.score = 0;
+        quizState.correctCount = 0;
+        quizState.wrongCount = 0;
+        quizState.userAnswers = [];
+
+        // ACAK DAN AMBIL 5 SOAL DARI BANK 20 SOAL
+        const shuffled = [...allChallengesBank].sort(() => 0.5 - Math.random());
+        activeQuizQuestions = shuffled.slice(0, 5);
+
+        document.getElementById("quizStudentInfo").innerText =
+          `${name} (${nis})`;
+
+        document.getElementById("challengeStartView").classList.add("hidden");
+        document.getElementById("challengeQuizView").classList.remove("hidden");
+        document.getElementById("challengeResultView").classList.add("hidden");
+
+        startBGM();
+        renderCurrentQuestion();
+      }
+
+      function renderCurrentQuestion() {
+        const ch = activeQuizQuestions[quizState.currentIndex];
+        const container = document.getElementById("singleQuestionContainer");
+
+        document.getElementById("currentQuestionNum").innerText =
+          quizState.currentIndex + 1;
+
+        const isAnswered =
+          quizState.userAnswers[quizState.currentIndex] !== undefined;
+        const answeredData = quizState.userAnswers[quizState.currentIndex];
+
+        let html = `
+                <div class="flex justify-between items-center">
+                    <span class="px-3.5 py-1 rounded-full text-xs font-bold border ${ch.badgeColor}">
+                        TANTANGAN ${quizState.currentIndex + 1}
+                    </span>
+                    ${
+                      isAnswered
+                        ? `
+                        <span class="text-xs font-bold px-3 py-1 rounded-full ${answeredData.isCorrect ? "bg-emerald-100 text-emerald-600 border border-emerald-300" : "bg-rose-100 text-rose-600 border border-rose-300"}">
+                            ${answeredData.isCorrect ? "✓ Benar (+20)" : "✗ Salah (0)"}
+                        </span>
+                    `
+                        : ""
+                    }
+                </div>
+
+                <h3 class="text-xl sm:text-2xl font-bold text-slate-800 leading-snug font-heading">${ch.question}</h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
+                    ${ch.options
+                      .map((opt, optIdx) => {
+                        let btnStyle =
+                          "bg-white hover:bg-pink-50 border-pink-200 text-slate-700 shadow-sm";
+                        if (isAnswered) {
+                          if (opt.correct) {
+                            btnStyle =
+                              "bg-emerald-500 border-emerald-500 text-white font-bold shadow-md";
+                          } else if (answeredData.selectedIdx === optIdx) {
+                            btnStyle =
+                              "bg-rose-500 border-rose-500 text-white font-bold shadow-md";
+                          } else {
+                            btnStyle =
+                              "bg-slate-100 border-slate-200 text-slate-400 opacity-60";
+                          }
+                        }
+
+                        return `
+                            <button 
+                                onclick="selectQuizAnswer(${optIdx},${opt.correct})"
+                                ${isAnswered ? "disabled" : ""}
+                                class="p-4 text-left rounded-2xl border text-xs sm:text-sm font-semibold transition duration-200 flex items-center justify-between ${btnStyle}">
+                                <span>${opt.text}</span>${isAnswered && opt.correct ? '<i class="fa-solid fa-circle-check text-white text-base"></i>' : ""}
+                            </button>
+                        `;
+                      })
+                      .join("")}
+                </div>
+
+                ${
+                  isAnswered
+                    ? `
+                    <div class="mt-4 pt-4 border-t border-pink-100 text-xs text-slate-600 bg-pink-50/80 p-4 rounded-2xl border border-pink-200 space-y-1">
+                        <p class="font-bold text-pink-600 flex items-center gap-1.5">
+                            <i class="fa-solid fa-lightbulb"></i> Pembahasan:
+                        </p>
+                        <p class="leading-relaxed text-slate-600">${ch.explanation}</p>
+                    </div>
+                `
+                    : ""
+                }
+            `;
+
+        container.innerHTML = html;
+
+        const nextBtn = document.getElementById("nextQuestionBtn");
+        if (isAnswered) {
+          nextBtn.disabled = false;
+          nextBtn.classList.remove(
+            "bg-slate-300",
+            "text-slate-500",
+            "shadow-none",
+            "cursor-not-allowed",
+          );
+          nextBtn.classList.add(
+            "bg-gradient-to-r",
+            "from-pink-500",
+            "to-sky-500",
+            "hover:from-pink-600",
+            "hover:to-sky-600",
+            "text-white",
+            "shadow-md",
+          );
+
+          if (quizState.currentIndex === activeQuizQuestions.length - 1) {
+            nextBtn.querySelector("span").innerText = "Lihat Laporan Hasil";
+          } else {
+            nextBtn.querySelector("span").innerText =
+              "Lanjut ke Tantangan Berikutnya";
+          }
+        } else {
+          nextBtn.disabled = true;
+          nextBtn.classList.add(
+            "bg-slate-300",
+            "text-slate-500",
+            "shadow-none",
+            "cursor-not-allowed",
+          );
+          nextBtn.classList.remove(
+            "bg-gradient-to-r",
+            "from-pink-500",
+            "to-sky-500",
+            "hover:from-pink-600",
+            "hover:to-sky-600",
+            "text-white",
+            "shadow-md",
+          );
+          nextBtn.querySelector("span").innerText = "Pilih Jawaban Dulu";
+        }
+      }
+
+      function selectQuizAnswer(optIdx, isCorrect) {
+        if (quizState.userAnswers[quizState.currentIndex] !== undefined) return;
+
+        if (isCorrect) {
+          quizState.score += 20;
+          quizState.correctCount++;
+          playWinSound();
+          confetti({ particleCount: 40, spread: 50, origin: { y: 0.7 } });
+        } else {
+          quizState.wrongCount++;
+        }
+
+        quizState.userAnswers[quizState.currentIndex] = {
+          selectedIdx: optIdx,
+          isCorrect,
+        };
+        renderCurrentQuestion();
+      }
+
+      function goToNextQuestion() {
+        if (quizState.currentIndex < activeQuizQuestions.length - 1) {
+          quizState.currentIndex++;
+          renderCurrentQuestion();
+        } else {
+          showFinalResults();
+        }
+      }
+
+      function showFinalResults() {
+        document.getElementById("challengeQuizView").classList.add("hidden");
+        document
+          .getElementById("challengeResultView")
+          .classList.remove("hidden");
+
+        document.getElementById("resStudentName").innerText =
+          quizState.studentName;
+        document.getElementById("resStudentNis").innerText =
+          quizState.studentNis;
+        document.getElementById("resTotalScore").innerText = quizState.score;
+        document.getElementById("resCorrectCount").innerText =
+          quizState.correctCount;
+        document.getElementById("resWrongCount").innerText =
+          quizState.wrongCount;
+
+        const accuracy = Math.round(
+          (quizState.correctCount / activeQuizQuestions.length) * 100,
+        );
+        document.getElementById("resAccuracy").innerText = `${accuracy}%`;
+
+        const feedbackElem = document.getElementById("resFeedbackMsg");
+        if (quizState.score === 100) {
+          feedbackElem.innerText =
+            "🌟 Sempurna! Kamu menguasai seluruh konsep polinomial dengan sangat baik!";
+        } else if (quizState.score >= 60) {
+          feedbackElem.innerText =
+            "👍 Bagus sekali! Kamu sudah memahami sebagian besar konsep aljabar polinomial.";
+        } else {
+          feedbackElem.innerText =
+            "💪 Tetap semangat! Coba putar Roda Polinomial lagi untuk latihan pemahaman konsep.";
+        }
+
+        confetti({ particleCount: 100, spread: 90, origin: { y: 0.6 } });
+
+        playCongratsSound();
+      }
+
+      function resetQuizToStart() {
+        stopBGM();
+        document.getElementById("challengeResultView").classList.add("hidden");
+        document.getElementById("challengeQuizView").classList.add("hidden");
+        document
+          .getElementById("challengeStartView")
+          .classList.remove("hidden");
+      }
+
+      // MODAL PETUNJUK
+      function openModal() {
+        document.getElementById("guideModal").classList.remove("hidden");
+      }
+
+      function closeModal() {
+        document.getElementById("guideModal").classList.add("hidden");
+      }
+
+      window.onclick = function (e) {
+        const modal = document.getElementById("guideModal");
+        if (e.target === modal) closeModal();
+      };
+
+      // Inisialisasi awal saat pertama dibuka
+      window.onload = function () {
+        drawWheel();
+        calculateResult();
+      };
+    </script>
+  </body>
+</html>
